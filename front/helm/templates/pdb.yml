@@ -1,0 +1,11 @@
+---
+{{- if .Values.pdb.enable }}
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+ name: {{ .Values.app.name }}
+spec:
+ minAvailable: "{{ .Values.pdb.minAvailable }}"
+ selector:
+  {{- include "app.selectorLabels" . | nindent 4 }}
+{{- end }}

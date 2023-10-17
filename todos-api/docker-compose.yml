@@ -1,0 +1,29 @@
+version: '3.6'
+
+networks:
+ front_micro_net:
+   driver: bridge
+   external: true
+   ipam:
+      driver: default
+      config:
+      - subnet: 192.168.203.0/24
+
+services:
+  todos-api:
+    image: 192.168.2.2:5000/todos-api
+    hostname: todos-api
+    container_name: todos-api
+    ports:
+    - "8084:8084"
+    environment:
+    - JWT_SECRET=myfancysecret
+    - TODO_API_PORT=8082
+    - REDIS_HOST=redis
+    - REDIS_PORT=6379
+    - REDIS_CHANNEL=log_channel
+    - ZIPKIN_URL=http://zipkin:9411/api/v2/spans
+
+    networks:
+      front_micro_net:
+        ipv4_address: 192.168.203.36

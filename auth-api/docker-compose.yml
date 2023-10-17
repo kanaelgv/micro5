@@ -1,0 +1,26 @@
+version: '3.6'
+
+networks:
+ front_micro_net:
+   driver: bridge
+   external: true
+   ipam:
+      driver: default
+      config:
+      - subnet: 192.168.203.0/24
+
+services:
+  auth-api:
+    image: 192.168.2.2:5000/auth_api
+    hostname: auth_api
+    container_name: auth_api
+    ports:
+    - "8081:8081"
+    environment:
+    - AUTH_API_PORT=8081
+    - JWT_SECRET=myfancysecret
+    - USERS_API_ADDRESS=http://users-api:8083
+    - ZIPKIN_URL=http://zipkin:9411/api/v2/spans
+    networks:
+      front_micro_net:
+        ipv4_address: 192.168.203.35

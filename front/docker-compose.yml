@@ -1,0 +1,43 @@
+version: '3.6'
+
+networks:
+ micro_net:
+   driver: bridge
+   ipam:
+      driver: default
+      config:
+      - subnet: 192.168.203.0/24
+
+services:
+  front:
+    image: 192.168.2.2:5000/front
+    hostname: front
+    container_name: front
+    ports:
+    - "8080:80"
+    environment:
+    - AUTH_API_ADDRESS=http://auth-api:8081
+    - PORT=8080
+    - TODOS_API_ADDRESS=http://todos-api:8082
+    - ZIPKIN_URL=http://zipkin:9411/api/v2/spans
+    networks:
+      micro_net:
+        ipv4_address: 192.168.203.38
+
+  zipkin:
+    image: openzipkin/zipkin
+    ports:
+      - 9411:9411
+    container_name: zipkin
+    networks:
+      micro_net:
+        ipv4_address: 192.168.203.32
+
+  redis:
+    image: redis
+    ports:
+      - 6379:6379
+    container_name: redis
+    networks:
+      micro_net:
+        ipv4_address: 192.168.203.33

@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: Deployment        # тип ресурса деплоймент
+metadata:
+  name: {{ .Values.app.name }}
+  labels:               # лейблы которые нужны для стыковки с сервисом
+    {{- include "app.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.app.replicas }}  # количество реплик пода
+  selector:
+    matchLabels:        # определяет с какими лейблами стыковаться
+      {{- include "app.selectorLabels" . | nindent 6 }}
+  strategy:
+    type: RollingUpdate # выбор стратегии выкатки пода: создаёт новый под и не переключает трафик, пока новый под не получит статус ready
+  template:             # описание шаблона для создания подов
+    metadata:
+      name: {{ .Values.app.name }}-pod
+      labels:
+        {{- include "app.selectorLabels" . | nindent 8 }}
+      annotations:  # это метаданные с дополнительной информацией, связанной с ресурсом или объектом. Аннотации состоят из пар ключ-значение. Каждая пара используется для описания метаданных ресурса или предоставления дополнительной информации
+        rollme: {{ randAlphaNum 5 | quote }}
+        branch: "{{ .Values.app.branch }}"  # это полезная переменная, можно с CI прокидывать имя ветки, чтобы знать, что задеплоилось 
+    spec:
+      affinity:       # для отказоустойчивости запретим двум подам запускаться на одной ноде
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app.kubernetes.io/instance # указываем ключ лейбла
+                operator: In
+                values:
+                - {{ .Values.app.name }}       # указываем значение - имя чарта
+            topologyKey: "kubernetes.io/hostname"
+      containers:                   # характеристики создаваемого пода
+      - env:
+        {{- include "todos-api.EnvStartup" . | indent 8 }}    # сюда заезжают переменные из темплейта (_helpers.tpl)
+        image: "{{ .Values.image.app }}:{{ .Values.image.tag }}"
+        imagePullPolicy: Always
+        name: {{ .Values.app.name }}
+        ports:
+        - containerPort: {{ .Values.service.internalPort }}
+          protocol: TCP
+        resources:
+          limits:                   # максимум ресурсов, выделяемых контейнеру
+            cpu: {{ .Values.limits.cpu }}
+            memory: {{ .Values.limits.memory }}
+          requests:                 #минимальное количество ресурсов необходимых для создания пода
+            cpu: {{ .Values.requests.cpu }}
+            memory: {{ .Values.requests.memory }}
+        livenessProbe:              # проверяет, что наш под жив, регулярно тыкая в порт
+          tcpSocket:
+            port: {{ .Values.service.internalPort }}
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          failureThreshold: 15
+        readinessProbe:             # проверяет, что под готов к работе
+          tcpSocket:
+            port: {{ .Values.service.internalPort }}
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          failureThreshold: 15
+        securityContext:            # настройки безопасности пода
+          allowPrivilegeEscalation: true  # разрешает повышать права в поде
+          capabilities:             # указываем, что поду не нужны никакие CAPS (повышение прав по секьюрити)
+            drop:
+            - ALL
+          privileged: true          # разрешает запуск от рута (стоит true, потому что иначе nginx ругается)
+          readOnlyRootFilesystem: false  # можно запретить писать данные в контейнер
+          runAsNonRoot: false       # включить запуск от случайного пользователя
+        volumeMounts:               
+        - name: some-data            # здесь мог бы быть ваш volume
+          mountPath: /some-data
+      volumes:
+      - name: some-data              
+        emptyDir: {}

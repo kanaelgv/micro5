@@ -1,0 +1,16 @@
+---
+apiVersion: v1
+kind: Service                                              # тип ресурса сервис
+metadata:
+  name: {{ .Values.app.name }}
+  labels:
+    {{- include "app.labels" . | nindent 4 }}
+spec:                                                      
+  type: NodePort                                           # добавим нод порт чтобы потыкать снаружи  
+  ports:
+  - port: {{ .Values.service.externalPort }}               # порт самого сервиса
+    protocol: TCP
+    targetPort: {{ .Values.service.internalPort }}         # порт контейнера
+    nodePort: 30111                                        # выберем конкретный номер для нод порта
+  selector:                                                # описывает лейбл по которому выбираются поды
+    {{- include "app.selectorLabels" . | nindent 4 }}

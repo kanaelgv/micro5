@@ -1,0 +1,9 @@
+apiVersion: v1                    
+kind: ConfigMap
+metadata:
+  name: "{{ .Values.app.name }}"
+  annotations:                                
+    "helm.sh/hook": pre-install,pre-upgrade   # аннотации нужны для хелма, указывают, что конфиг нужно установить перед диплойментом
+    "helm.sh/hook-weight": "0"
+data:
+  CONFIG_ENV: "{{ .Values.config.env }}"

@@ -1,0 +1,26 @@
+version: '3.6'
+
+networks:
+ front_micro_net:
+   driver: bridge
+   external: true
+   ipam:
+      driver: default
+      config:
+      - subnet: 192.168.203.0/24
+
+services:
+  gitlab:
+    image: 192.168.2.2:5000/users-api
+    hostname: users-api
+    container_name: users-api
+    ports:
+    - "8085:8085"
+    environment:
+    - JWT_SECRET=myfancysecret
+    - SERVER_PORT=8083
+    - SPRING_ZIPKIN_BASE_URL=http://zipkin:9411
+
+    networks:
+      front_micro_net:
+        ipv4_address: 192.168.203.37

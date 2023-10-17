@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: users-api
+  namespace: microservices-example
+  labels:
+    app: users-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: users-api
+  template:
+    metadata:
+      labels:
+        app: users-api
+    spec:
+      containers:
+        - image: 192.168.0.101:5000/users-api
+          name: users-api
+          ports:
+          - containerPort: 8083
+          env:
+          - name: JWT_SECRET
+            value: myfancysecret
+          - name: SERVER_PORT
+            value: "8083"
+          - name: ZIPKIN_HOST
+            value: 192.168.0.101
+          - name: ZIPKIN_PORT
+            value: "9411"
+          - name: SPRING_ZIPKIN_BASE_URL
+            value: http://192.168.0.101:9411
+      restartPolicy: Always
+      securityContext:
+        runAsUser: 1000
+        fsGroup: 1000
+      imagePullSecrets:
+      - name: dockerhub-image-pull-secret
+

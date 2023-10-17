@@ -1,0 +1,27 @@
+version: '3.6'
+
+networks:
+ front_micro_net:
+   driver: bridge
+   external: true
+   ipam:
+      driver: default
+      config:
+      - subnet: 192.168.203.0/24
+
+services:
+  log-message-processor:
+    image: 192.168.2.2:5000/log-message-processor
+    hostname: log-message-processor
+    container_name: log-message-processor
+    ports:
+    - "8083:8083"
+    environment:
+    - REDIS_HOST=redis
+    - REDIS_PORT=6379
+    - REDIS_CHANNEL=log_channel
+    - ZIPKIN_URL=http://zipkin:9411/api/v1/spans
+
+    networks:
+      front_micro_net:
+        ipv4_address: 192.168.203.39

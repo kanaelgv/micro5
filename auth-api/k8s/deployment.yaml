@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-api
+  namespace: microservices-example
+  labels:
+    app: auth-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: auth-api
+  template:
+    metadata:
+      labels:
+        app: auth-api
+    spec:
+      containers:
+        - image: 192.168.0.101:5000/auth_api
+          name: auth-api
+          ports:
+          - containerPort: 8081
+          env:
+            - name: AUTH_API_PORT
+              value: "8081"
+            - name: JWT_SECRET
+              value: myfancysecret
+            - name: USERS_API_ADDRESS
+              value: http://users-api:8083
+            - name: ZIPKIN_HOST
+              value: 192.168.0.101
+            - name: ZIPKIN_PORT
+              value: "9411"
+            - name: ZIPKIN_URL
+              value: http://192.168.0.101:9411/api/v2/spans
+      restartPolicy: Always
+      securityContext:
+        runAsUser: 1000
+        fsGroup: 1000

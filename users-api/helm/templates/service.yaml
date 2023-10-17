@@ -1,0 +1,12 @@
+---
+apiVersion: v1
+kind: Service                                              # тип ресурса сервис
+metadata:
+  name: {{ .Values.app.name }}
+  labels:
+    {{- include "app.labels" . | nindent 4 }}
+spec:                                                                                          
+  ports:
+  - port: {{ .Values.service.externalPort }}               # порт самого сервиса
+  selector:                                                # описывает лейбл по которому выбираются поды
+    {{- include "app.selectorLabels" . | nindent 4 }}

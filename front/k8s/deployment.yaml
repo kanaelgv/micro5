@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: front
+  namespace: microservices-example
+  labels:
+    app: front
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: front
+  template:
+    metadata:
+      labels:
+        app: front
+    spec:
+      volumes:
+        - name: nginx-conf
+          configMap:
+            name: nginx-conf
+            items:
+              - key: nginx.conf
+                path: default.conf
+            defaultMode: 420 
+      containers:
+        - image: 192.168.0.101:5000/front
+          name: front
+          ports:
+          - containerPort: 80
+          volumeMounts:
+          - name: nginx-conf
+            readOnly: true
+            mountPath: /etc/nginx/conf.d
+          env:
+          - name: AUTH_API_ADDRESS
+            value: auth-api:8081
+          - name: FRONT_PORT
+            value: frontend:8080
+          - name: TODOS_API_ADDRESS
+            value: http://todos-api:8082
+          - name: ZIPKIN_HOST
+            value: 192.168.0.101
+          - name: ZIPKIN_PORT
+            value: "9411"
+          - name: ZIPKIN_URL
+            value: http://192.168.0.101:9411/api/v2/spans
+      restartPolicy: Always
+      securityContext:
+        runAsUser: 0
+        fsGroup: 0
+      imagePullSecrets:
+      - name: dockerhub-image-pull-secret
