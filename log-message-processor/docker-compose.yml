@@ -11,11 +11,11 @@ networks:
 
 services:
   log-message-processor:
-    image: 192.168.2.2:5000/log-message-processor
+    image: 192.168.1.2:5000/log-message-processor
     hostname: log-message-processor
     container_name: log-message-processor
-    ports:
-    - "8083:8083"
+    ## ports:
+  ##  - "8083:8083"
     environment:
     - REDIS_HOST=redis
     - REDIS_PORT=6379

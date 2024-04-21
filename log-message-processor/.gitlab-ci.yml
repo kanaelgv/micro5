@@ -5,19 +5,19 @@ stages:
 image: docker
 
 # variables:
-#   DOCKER_HOST: tcp://192.168.2.2:2375
+#   DOCKER_HOST: tcp://192.168.1.2:2375
 
 build-job:
   stage: build
   script:
     - echo "Start build job"
-    - docker build -f log-message-processor/Dockerfile -t 192.168.2.2:5000/log-message-processor ./log-message-processor
-    - docker push 192.168.2.2:5000/log-message-processor
+    - docker build -f log-message-processor/Dockerfile -t 192.168.1.2:5000/log-message-processor ./log-message-processor
+    - docker push 192.168.1.2:5000/log-message-processor
 
 deploy:
   stage: deploy
   script:
-    - docker pull 192.168.2.2:5000/log-message-processor
+    - docker pull 192.168.1.2:5000/log-message-processor
     - pwd
     - docker-compose up -d
   allow_failure: true

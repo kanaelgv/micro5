@@ -10,7 +10,7 @@ networks:
 
 services:
   front:
-    image: 192.168.2.2:5000/front
+    image: 192.168.1.2:5000/front
     hostname: front
     container_name: front
     ports:

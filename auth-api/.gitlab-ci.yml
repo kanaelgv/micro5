@@ -5,19 +5,19 @@ stages:
 image: docker
 
 # variables:
-#   DOCKER_HOST: tcp://192.168.2.2:2375
+#   DOCKER_HOST: tcp://192.168.1.2:2375
 
 build-job:
   stage: build
   script:
     - echo "Start build job"
-    - docker build -f auth_api/Dockerfile -t 192.168.2.2:5000/auth_api ./auth_api
-    - docker push 192.168.2.2:5000/auth_api
+    - docker build -f auth-api/Dockerfile -t 192.168.1.2:5000/auth-api ./auth-api
+    - docker push 192.168.1.2:5000/auth-api
 
 deploy:
   stage: deploy
   script:
-    - docker pull 192.168.2.2:5000/auth_api
+    - docker pull 192.168.1.2:5000/auth-api
     - docker-compose up -d
   allow_failure: true
 
