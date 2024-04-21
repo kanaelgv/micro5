@@ -24,5 +24,7 @@ FROM nginx
 #копируем результат сборки
 COPY --chown=1001:0 --from=node /usr/src/app/dist/ /usr/share/nginx/html/
 
+
+COPY --chown=1001:0  nginx/default.conf /etc/nginx/conf.d/default.conf
 #запускаем nginx
 CMD ["/bin/sh" , "-c" , "nginx -g 'daemon off;'"]
