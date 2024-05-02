@@ -4,7 +4,7 @@ metadata:
   labels: 
     app: log-message-processor
   name: log-message-processor
-  namespace: microservices-example
+ 
 spec:
   ports:
   - port: 8083

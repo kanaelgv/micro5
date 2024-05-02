@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: users-api
-  namespace: microservices-example
+ 
   labels:
     app: users-api
 spec:
@@ -16,7 +16,7 @@ spec:
         app: users-api
     spec:
       containers:
-        - image: 192.168.0.101:5000/users-api
+        - image: myregistry:5000/users-api
           name: users-api
           ports:
           - containerPort: 8083
@@ -26,11 +26,11 @@ spec:
           - name: SERVER_PORT
             value: "8083"
           - name: ZIPKIN_HOST
-            value: 192.168.0.101
+            value: lab1
           - name: ZIPKIN_PORT
             value: "9411"
           - name: SPRING_ZIPKIN_BASE_URL
-            value: http://192.168.0.101:9411
+            value: http://lab1:9411
       restartPolicy: Always
       securityContext:
         runAsUser: 1000

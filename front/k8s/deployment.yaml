@@ -2,7 +2,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: front
-  namespace: microservices-example
   labels:
     app: front
 spec:
@@ -24,7 +23,7 @@ spec:
                 path: default.conf
             defaultMode: 420 
       containers:
-        - image: 192.168.0.101:5000/front
+        - image: myregistry:5000/front
           name: front
           ports:
           - containerPort: 80
@@ -40,11 +39,11 @@ spec:
           - name: TODOS_API_ADDRESS
             value: http://todos-api:8082
           - name: ZIPKIN_HOST
-            value: 192.168.0.101
+            value: lab1
           - name: ZIPKIN_PORT
             value: "9411"
           - name: ZIPKIN_URL
-            value: http://192.168.0.101:9411/api/v2/spans
+            value: http://lab1:9411/api/v2/spans
       restartPolicy: Always
       securityContext:
         runAsUser: 0

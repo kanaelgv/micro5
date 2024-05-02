@@ -1,0 +1,28 @@
+version: '3.6'
+
+networks:
+ micro_net:
+   driver: bridge
+   ipam:
+      driver: default
+      config:
+      - subnet: 192.168.203.0/24
+
+services:
+  zipkin:
+    image: openzipkin/zipkin
+    ports:
+      - 9411:9411
+    container_name: zipkin
+    networks:
+      micro_net:
+        ipv4_address: 192.168.203.32
+
+  redis:
+    image: redis
+    ports:
+      - 6379:6379
+    container_name: redis
+    networks:
+      micro_net:
+        ipv4_address: 192.168.203.33

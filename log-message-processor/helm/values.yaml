@@ -6,7 +6,7 @@ app:                               ### блок про деплой ###
   replicas: 1                      # количество реплик для приложения
 
 image:                             ### блок про образ ###
-  app: 192.168.0.101:5000/log-message-processor            # имя образа
+  app: myregistry:5000/log-message-processor            # имя образа
   tag:  latest                     # тег образа
   
 service:                           ### блок про сервис ###
@@ -14,14 +14,14 @@ service:                           ### блок про сервис ###
   externalPort: 8083                 # порт внешний
 
 redis:
-  host: "192.168.0.101"
+  host: "lab1"
   port: "6379"
   log_channel: "log_channel"
 
 zipkin: 
-  host: "192.168.0.101"
+  host: "lab1"
   port: "9411"
-  url: "http://192.168.0.101:9411/api/v2/spans"
+  url: "http://lab1:9411/api/v2/spans"
 
 config:                            
   env: "456"                       # здесь могла бы быть ваша переменная для конфигмапы

@@ -4,7 +4,6 @@ metadata:
   labels:
     app: front
   name: front
-  namespace: microservices-example
 spec:
   ports:
   - port: 80

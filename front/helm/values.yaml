@@ -6,7 +6,7 @@ app:                               ### блок про деплой ###
   replicas: 1                      # количество реплик для приложения
 
 image:                             ### блок про образ ###
-  app: 192.168.0.101:5000/front           # имя образа
+  app: myregistry:5000/front           # имя образа
   tag:  latest                     # тег образа
   
 service:                           ### блок про сервис ###
@@ -23,9 +23,9 @@ todos_api:
   url: "http://todos-api:8082"
 
 zipkin: 
-  host: "192.168.0.101"
+  host: "lab1"
   port: "9411"
-  url: "http://192.168.0.101:9411/api/v2/spans"
+  url: "http://lab1:9411/api/v2/spans"
 
 config:                            
   env: "456"                       # здесь могла бы быть ваша переменная для конфигмапы

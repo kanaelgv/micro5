@@ -26,7 +26,7 @@ data:
       }
 
       location /zipkin {
-          proxy_pass http://192.168.0.101:9411;
+          proxy_pass http://lab1:9411;
       }
 
       error_page   500 502 503 504  /50x.html;

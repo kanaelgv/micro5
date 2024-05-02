@@ -2,7 +2,7 @@ kind: ConfigMap
 apiVersion: v1
 metadata:
   name: nginx-conf
-  namespace: microservices-example
+ 
 data:
   nginx.conf: | 
     server {
@@ -23,7 +23,7 @@ data:
       }
 
       location /zipkin {
-          proxy_pass http://192.168.0.101:9411;
+          proxy_pass http://lab1:9411;
       }
 
       error_page   500 502 503 504  /50x.html;
